@@ -2,45 +2,124 @@
 <html>
 <head>
     <title>Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-<h1>Dashboard</h1>
+    <h1>Dashboard</h1>
 
-<hr>
+    <hr>
 
-<h2>Total Attempts: {{ total_attempts }}</h2>
+    <h2>Total Attempts: {{ total_attempts }}</h2>
 
-<h2>Average Percentage: {{ average_percentage }}%</h2>
+    <h2>Average Percentage: {{ average_percentage }}%</h2>
 
-<h2>Highest Score: {{ highest_score }}</h2>
+    <h2>Highest Score: {{ highest_score }}</h2>
 
-<h2>Lowest Score: {{ lowest_score }}</h2>
+    <h2>Lowest Score: {{ lowest_score }}</h2>
 
-<hr>
+    <hr>
 
-<h2>
-Weakest Topic:
-{{ weak_topic }}
-</h2>
+    <h2>
+        Weakest Topic:
+        {{ weak_topic }}
+    </h2>
 
-<h2>
-Recommended Resources
-</h2>
+    <h2>Recommended Resources</h2>
 
-<ul>
+    {% if resources %}
 
-{% for resource in resources %}
+        <ul>
 
-<li>
-<a href="{{ resource.url }}" target="_blank">
-{{ resource.title }}
-</a>
-</li>
+            {% for resource in resources %}
 
-{% endfor %}
+                <li>
+                    <a href="{{ resource.url }}" target="_blank">
+                        {{ resource.title }}
+                    </a>
+                </li>
 
-</ul>
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <p>No recommendations available.</p>
+
+    {% endif %}
+
+    <hr>
+
+    <h2>Performance Trend</h2>
+
+    <canvas
+        id="attemptChart"
+        width="800"
+        height="300">
+    </canvas>
+
+    <br><br>
+
+    <h2>Topic Performance</h2>
+
+    <canvas
+        id="topicChart"
+        width="800"
+        height="300">
+    </canvas>
+
+    <script>
+
+        const attemptLabels =
+        {{ attempt_labels|safe }};
+
+        const attemptScores =
+        {{ attempt_scores|safe }};
+
+        new Chart(
+            document.getElementById('attemptChart'),
+            {
+                type: 'line',
+
+                data: {
+                    labels: attemptLabels,
+
+                    datasets: [{
+                        label: 'Percentage',
+
+                        data: attemptScores
+                    }]
+                }
+            }
+        );
+
+        const topicLabels =
+        {{ topic_labels|safe }};
+
+        const topicPercentages =
+        {{ topic_percentages|safe }};
+
+        new Chart(
+            document.getElementById('topicChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: topicLabels,
+
+                    datasets: [{
+                        label: 'Topic Performance',
+
+                        data: topicPercentages
+                    }]
+                }
+            }
+        );
+
+    </script>
 
 </body>
 </html>

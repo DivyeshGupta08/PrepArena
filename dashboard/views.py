@@ -2,7 +2,7 @@ from django.shortcuts import render
 from quizzes.models import QuizAttempt
 from django.db.models import Avg, Max, Min
 from resources.models import StudyResource
-
+import json
 
 def dashboard(request):
 
@@ -64,6 +64,33 @@ def dashboard(request):
         resources = StudyResource.objects.filter(
             topic_name=weak_topic
         )
+        
+    attempt_labels = []
+    attempt_scores = []
+
+    for attempt in attempts.order_by('-submitted_at')[:10]:
+
+        attempt_labels.append(
+            attempt.submitted_at.strftime('%d-%m')
+        )
+
+        attempt_scores.append(
+            float(attempt.percentage)
+        )
+        
+    topic_labels = []
+    topic_percentages = []
+
+    for topic, scores in topic_scores.items():
+
+        topic_labels.append(topic)
+
+        topic_percentages.append(
+            round(
+                sum(scores) / len(scores),
+                2
+            )
+        )
 
     context = {
 
@@ -81,6 +108,22 @@ def dashboard(request):
         'weak_topic': weak_topic,
 
         'resources': resources,
+        
+        'attempt_labels': json.dumps(
+            attempt_labels
+        ),
+
+        'attempt_scores': json.dumps(
+            attempt_scores
+        ),
+
+        'topic_labels': json.dumps(
+            topic_labels
+        ),
+
+        'topic_percentages': json.dumps(
+            topic_percentages
+        ),
     }
 
     return render(
