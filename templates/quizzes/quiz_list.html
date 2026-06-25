@@ -7,6 +7,23 @@
 
 <h1>{{ topic.name }} Quizzes</h1>
 
+<form method="GET">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search Quiz"
+        value="{{ search_query }}"
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<br>
+
 {% for quiz in quizzes %}
 
 <div style="border:1px solid black;padding:10px;margin:10px;">

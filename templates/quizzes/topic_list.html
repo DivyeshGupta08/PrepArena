@@ -25,6 +25,7 @@
 <br>
 
 {% for topic in topics %}
+
 <div style="border:1px solid black;padding:10px;margin:10px;">
 
     <h3>{{ topic.name }}</h3>
@@ -36,6 +37,14 @@
     </a>
 
 </div>
+
+{% empty %}
+
+<h3>No topics found.</h3>
+
+<p>
+Try another search keyword.
+</p>
 
 {% endfor %}
 

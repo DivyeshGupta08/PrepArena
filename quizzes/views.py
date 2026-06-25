@@ -45,17 +45,29 @@ def quiz_list(request, topic_id):
         id=topic_id
     )
 
+    search_query = request.GET.get(
+        'search',
+        ''
+    )
+
     quizzes = Quiz.objects.filter(
         topic=topic,
         is_published=True
     )
+
+    if search_query:
+
+        quizzes = quizzes.filter(
+            title__icontains=search_query
+        )
 
     return render(
         request,
         'quizzes/quiz_list.html',
         {
             'topic': topic,
-            'quizzes': quizzes
+            'quizzes': quizzes,
+            'search_query': search_query
         }
     )
     
