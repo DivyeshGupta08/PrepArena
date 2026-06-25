@@ -49,6 +49,8 @@ def dashboard(request):
             attempt.percentage
         )
 
+    strong_topic = None
+
     if topic_scores:
 
         averages = {
@@ -61,8 +63,46 @@ def dashboard(request):
             key=averages.get
         )
 
-        resources = StudyResource.objects.filter(
-            topic_name=weak_topic
+        strong_topic = max(
+            averages,
+            key=averages.get
+        )
+        
+    if average_percentage >= 90:
+        grade = 'A'
+
+    elif average_percentage >= 75:
+        grade = 'B'
+
+    elif average_percentage >= 60:
+        grade = 'C'
+
+    else:
+        grade = 'D'
+    
+    interview_readiness = round(
+        average_percentage,
+        2
+    )
+    
+    recommendation = ""
+
+    if interview_readiness >= 80:
+
+        recommendation = (
+            "You are interview ready."
+        )
+
+    elif interview_readiness >= 60:
+
+        recommendation = (
+            "Practice weak topics to improve confidence."
+        )
+
+    else:
+
+        recommendation = (
+            f"Focus on {weak_topic} before attempting interviews."
         )
         
     attempt_labels = []
@@ -124,6 +164,16 @@ def dashboard(request):
         'topic_percentages': json.dumps(
             topic_percentages
         ),
+        
+        'strong_topic': strong_topic,
+
+        'grade': grade,
+
+        'interview_readiness':
+        interview_readiness,
+
+        'recommendation':
+        recommendation,
     }
 
     return render(
