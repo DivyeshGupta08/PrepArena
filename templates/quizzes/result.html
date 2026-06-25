@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Result</title>
+</head>
+<body>
+
+<h1>Quiz Result</h1>
+
+<p>
+Score:
+{{ attempt.score }}
+</p>
+
+<p>
+Percentage:
+{{ attempt.percentage }}%
+</p>
+
+{% if attempt.percentage >= 75 %}
+
+<h2>Excellent</h2>
+
+{% elif attempt.percentage >= 50 %}
+
+<h2>Good</h2>
+
+{% else %}
+
+<h2>Need Improvement</h2>
+
+{% endif %}
+
+<br><br>
+
+<a href="{% url 'review_answers' attempt.id %}">
+    Review Answers
+</a>
+
+<br><br>
+
+</body>
+</html>

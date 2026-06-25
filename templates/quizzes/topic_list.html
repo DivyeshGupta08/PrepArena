@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topics</title>
+</head>
+<body>
+
+<h1>Interview Topics</h1>
+
+{% for topic in topics %}
+<div style="border:1px solid black;padding:10px;margin:10px;">
+
+    <h3>{{ topic.name }}</h3>
+
+    <p>{{ topic.description }}</p>
+
+    <a href="{% url 'quiz_list' topic.id %}">
+        View Quizzes
+    </a>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>

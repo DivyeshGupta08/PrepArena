@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h1>Dashboard</h1>
+
+<hr>
+
+<h2>Total Attempts: {{ total_attempts }}</h2>
+
+<h2>Average Percentage: {{ average_percentage }}%</h2>
+
+<h2>Highest Score: {{ highest_score }}</h2>
+
+<h2>Lowest Score: {{ lowest_score }}</h2>
+
+<hr>
+
+<h2>
+Weakest Topic:
+{{ weak_topic }}
+</h2>
+
+<h2>
+Recommended Resources
+</h2>
+
+<ul>
+
+{% for resource in resources %}
+
+<li>
+<a href="{{ resource.url }}" target="_blank">
+{{ resource.title }}
+</a>
+</li>
+
+{% endfor %}
+
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz List</title>
+</head>
+<body>
+
+<h1>{{ topic.name }} Quizzes</h1>
+
+{% for quiz in quizzes %}
+
+<div style="border:1px solid black;padding:10px;margin:10px;">
+
+    <h3>{{ quiz.title }}</h3>
+
+    <p>{{ quiz.description }}</p>
+
+    <p>
+        Time:
+        {{ quiz.time_limit_minutes }}
+        Minutes
+    </p>
+
+    <a href="{% url 'quiz_start' quiz.id %}">
+        Start Quiz
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>No quizzes available.</p>
+
+{% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Review Answers</title>
+</head>
+<body>
+
+<h1>Answer Review</h1>
+
+{% for answer in answers %}
+
+<hr>
+
+<h2>
+Question {{ forloop.counter }}
+</h2>
+
+<p>
+{{ answer.question.question_text }}
+</p>
+
+<p>
+Your Answer:
+{{ answer.selected_option }}
+</p>
+
+<p>
+Correct Answer:
+{{ answer.question.correct_option }}
+</p>
+
+<p>
+Explanation:
+{{ answer.question.explanation }}
+</p>
+
+{% if answer.is_correct %}
+
+<h3>
+✅ Correct
+</h3>
+
+{% else %}
+
+<h3>
+❌ Incorrect
+</h3>
+
+{% endif %}
+
+{% endfor %}
+
+<br>
+
+<a href="/quizzes/topics/">
+Back To Topics
+</a>
+
+</body>
+</html>

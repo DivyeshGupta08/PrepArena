@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ quiz.title }}</title>
+</head>
+<body>
+
+<h1>{{ quiz.title }}</h1>
+
+<form method="POST">
+
+{% csrf_token %}
+
+{% for question in questions %}
+
+<hr>
+
+<h3>
+Q{{ forloop.counter }}.
+{{ question.question_text }}
+</h3>
+
+<label>
+<input
+type="radio"
+name="question_{{ question.id }}"
+value="A">
+
+{{ question.option_a }}
+
+</label>
+
+<br><br>
+
+<label>
+<input
+type="radio"
+name="question_{{ question.id }}"
+value="B">
+
+{{ question.option_b }}
+
+</label>
+
+<br><br>
+
+<label>
+<input
+type="radio"
+name="question_{{ question.id }}"
+value="C">
+
+{{ question.option_c }}
+
+</label>
+
+<br><br>
+
+<label>
+<input
+type="radio"
+name="question_{{ question.id }}"
+value="D">
+
+{{ question.option_d }}
+
+</label>
+
+<br><br>
+
+{% endfor %}
+
+<button type="submit">
+Submit Quiz
+</button>
+
+</form>
+
+</body>
+</html>

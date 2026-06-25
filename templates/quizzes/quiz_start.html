@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Start</title>
+</head>
+<body>
+
+<h1>{{ quiz.title }}</h1>
+
+<p>{{ quiz.description }}</p>
+
+<p>
+Questions:
+{{ question_count }}
+</p>
+
+<p>
+Time Limit:
+{{ quiz.time_limit_minutes }}
+Minutes
+</p>
+
+<a href="{% url 'take_quiz' quiz.id %}">
+    Start Quiz
+</a>
+
+</body>
+</html>
