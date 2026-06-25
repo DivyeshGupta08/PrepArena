@@ -16,13 +16,25 @@ from .models import (
 
 def topic_list(request):
 
+    search_query = request.GET.get(
+        'search',
+        ''
+    )
+
     topics = Topic.objects.all()
+
+    if search_query:
+
+        topics = topics.filter(
+            name__icontains=search_query
+        )
 
     return render(
         request,
         'quizzes/topic_list.html',
         {
-            'topics': topics
+            'topics': topics,
+            'search_query': search_query
         }
     )
     
