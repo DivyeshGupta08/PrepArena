@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Topic(models.Model):
@@ -47,14 +49,14 @@ class Question(models.Model):
 
     correct_option = models.CharField(max_length=1)
 
-    explanation = models.TextField(blank=True)
+    explanation = models.TextField(
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.question_text[:50]
     
-from django.contrib.auth.models import User
-
-
 class QuizAttempt(models.Model):
 
     user = models.ForeignKey(
