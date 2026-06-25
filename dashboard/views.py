@@ -4,6 +4,7 @@ from django.db.models import Avg, Max, Min
 from resources.models import StudyResource
 import json
 
+
 def dashboard(request):
 
     attempts = QuizAttempt.objects.filter(
@@ -34,7 +35,9 @@ def dashboard(request):
     )
 
     weak_topic = None
+    strong_topic = None
     resources = []
+    readiness_score = 0
 
     topic_scores = {}
 
@@ -43,18 +46,19 @@ def dashboard(request):
         topic_name = attempt.quiz.topic.name
 
         if topic_name not in topic_scores:
+
             topic_scores[topic_name] = []
 
         topic_scores[topic_name].append(
             attempt.percentage
         )
 
-    strong_topic = None
-
     if topic_scores:
 
         averages = {
+
             topic: sum(scores) / len(scores)
+
             for topic, scores in topic_scores.items()
         }
 
@@ -67,24 +71,37 @@ def dashboard(request):
             averages,
             key=averages.get
         )
-        
-    if average_percentage >= 90:
-        grade = 'A'
 
-    elif average_percentage >= 75:
-        grade = 'B'
+        readiness_score = round(
+            average_percentage,
+            2
+        )
 
-    elif average_percentage >= 60:
-        grade = 'C'
+        resources = StudyResource.objects.filter(
+            topic_name=weak_topic
+        )
+
+    if readiness_score >= 80:
+
+        grade = "A"
+
+    elif readiness_score >= 60:
+
+        grade = "B"
+
+    elif readiness_score >= 40:
+
+        grade = "C"
 
     else:
-        grade = 'D'
-    
+
+        grade = "D"
+
     interview_readiness = round(
         average_percentage,
         2
     )
-    
+
     recommendation = ""
 
     if interview_readiness >= 80:
@@ -104,26 +121,34 @@ def dashboard(request):
         recommendation = (
             f"Focus on {weak_topic} before attempting interviews."
         )
-        
+
     attempt_labels = []
     attempt_scores = []
 
-    for attempt in attempts.order_by('-submitted_at')[:10]:
+    for attempt in attempts.order_by(
+        '-submitted_at'
+    )[:10]:
 
         attempt_labels.append(
-            attempt.submitted_at.strftime('%d-%m')
+            attempt.submitted_at.strftime(
+                '%d-%m'
+            )
         )
 
         attempt_scores.append(
-            float(attempt.percentage)
+            float(
+                attempt.percentage
+            )
         )
-        
+
     topic_labels = []
     topic_percentages = []
 
     for topic, scores in topic_scores.items():
 
-        topic_labels.append(topic)
+        topic_labels.append(
+            topic
+        )
 
         topic_percentages.append(
             round(
@@ -147,8 +172,20 @@ def dashboard(request):
 
         'weak_topic': weak_topic,
 
+        'strong_topic': strong_topic,
+
+        'grade': grade,
+
+        'readiness_score': readiness_score,
+
+        'interview_readiness':
+        interview_readiness,
+
+        'recommendation':
+        recommendation,
+
         'resources': resources,
-        
+
         'attempt_labels': json.dumps(
             attempt_labels
         ),
@@ -164,16 +201,6 @@ def dashboard(request):
         'topic_percentages': json.dumps(
             topic_percentages
         ),
-        
-        'strong_topic': strong_topic,
-
-        'grade': grade,
-
-        'interview_readiness':
-        interview_readiness,
-
-        'recommendation':
-        recommendation,
     }
 
     return render(

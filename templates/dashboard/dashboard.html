@@ -24,31 +24,46 @@
 
     <h2>
         Weakest Topic:
-        {{ weak_topic }}
+        {% if weak_topic %}
+            {{ weak_topic }}
+        {% else %}
+            N/A
+        {% endif %}
     </h2>
 
     <h2>
-    Strongest Topic:
-    {{ strong_topic }}
+        Strongest Topic:
+        {% if strong_topic %}
+            {{ strong_topic }}
+        {% else %}
+            N/A
+        {% endif %}
     </h2>
 
     <h2>
-    Performance Grade:
-    {{ grade }}
+        Performance Grade:
+        {{ grade }}
     </h2>
 
     <h2>
-    Interview Readiness:
-    {{ interview_readiness }}%
+        Readiness Score:
+        {{ readiness_score }}%
     </h2>
 
     <h2>
-    Recommendation:
+        Interview Readiness:
+        {{ interview_readiness }}%
+    </h2>
+
+    <h2>
+        Recommendation:
     </h2>
 
     <p>
-    {{ recommendation }}
+        {{ recommendation }}
     </p>
+
+    <hr>
 
     <h2>Recommended Resources</h2>
 
@@ -112,7 +127,6 @@
 
                     datasets: [{
                         label: 'Percentage',
-
                         data: attemptScores
                     }]
                 }
@@ -135,7 +149,6 @@
 
                     datasets: [{
                         label: 'Topic Performance',
-
                         data: topicPercentages
                     }]
                 }
