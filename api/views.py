@@ -245,3 +245,22 @@ def attempt_history_api(request):
     )
 
     return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def attempt_detail_api(request, attempt_id):
+
+    attempt = get_object_or_404(
+        QuizAttempt,
+        id=attempt_id,
+        user=request.user
+    )
+
+    serializer = QuizAttemptSerializer(
+        attempt
+    )
+
+    return Response(
+        serializer.data
+    )
