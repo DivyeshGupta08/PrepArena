@@ -11,7 +11,8 @@ from .views import (
     submit_quiz_api,
     attempt_history_api,
     attempt_detail_api,
-    dashboard_api
+    dashboard_api,
+    leaderboard_api
 )
 
 urlpatterns = [
@@ -80,6 +81,12 @@ urlpatterns = [
         'dashboard/',
         dashboard_api,
         name='dashboard_api'
+    ),
+    
+    path(
+        'leaderboard/',
+        leaderboard_api,
+        name='leaderboard_api'
     ),
 
 ]

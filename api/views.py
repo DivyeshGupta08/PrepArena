@@ -6,10 +6,20 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from quizzes.models import Topic, Quiz, Question, QuizAttempt, UserAnswer
-from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer, QuizAttemptSerializer, DashboardSerializer
+from .serializers import (
+    TopicSerializer,
+    QuizSerializer,
+    QuestionSerializer,
+    QuizSubmissionSerializer,
+    QuizAttemptSerializer,
+    DashboardSerializer,
+    LeaderboardSerializer
+)
 from django.utils import timezone
 from django.db.models import Avg, Max, Min
 from resources.models import StudyResource
+from django.contrib.auth.models import User
+
 
 @api_view(['GET'])
 def topic_api(request):
@@ -402,7 +412,65 @@ def dashboard_api(request):
     }
 
     serializer = DashboardSerializer(
-        data
+        instance=data
+    )
+
+    return Response(
+        serializer.data
+    )
+    
+@api_view(['GET'])
+def leaderboard_api(request):
+
+    users = User.objects.all()
+
+    leaderboard = []
+
+    for user in users:
+
+        attempts = QuizAttempt.objects.filter(
+            user=user
+        )
+
+        if attempts.exists():
+
+            leaderboard.append({
+
+                "username": user.username,
+
+                "best_score": (
+                    attempts.aggregate(
+                        Max('score')
+                    )['score__max']
+                ),
+
+                "average_percentage": round(
+
+                    attempts.aggregate(
+                        Avg('percentage')
+                    )['percentage__avg'],
+
+                    2
+                )
+            })
+
+    leaderboard = sorted(
+
+        leaderboard,
+
+        key=lambda x: (
+            x['best_score'],
+            x['average_percentage']
+        ),
+
+        reverse=True
+    )
+
+    serializer = LeaderboardSerializer(
+
+        leaderboard,
+
+        many=True
     )
 
     return Response(

@@ -126,3 +126,13 @@ class DashboardSerializer(
     interview_readiness = serializers.FloatField()
 
     recommendation = serializers.CharField()
+    
+class LeaderboardSerializer(
+    serializers.Serializer
+):
+
+    username = serializers.CharField()
+
+    best_score = serializers.IntegerField()
+
+    average_percentage = serializers.FloatField()
