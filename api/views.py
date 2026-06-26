@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from quizzes.models import Topic, Quiz, Question, QuizAttempt, UserAnswer
-from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer
+from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer, QuizAttemptSerializer
 from django.utils import timezone
 
 @api_view(['GET'])
@@ -229,3 +229,19 @@ def submit_quiz_api(request):
         "percentage": percentage
 
     })
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def attempt_history_api(request):
+
+    attempts = QuizAttempt.objects.filter(
+        user=request.user
+    ).order_by('-submitted_at')
+
+    serializer = QuizAttemptSerializer(
+        attempts,
+        many=True
+    )
+
+    return Response(serializer.data)

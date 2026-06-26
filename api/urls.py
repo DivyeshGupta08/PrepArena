@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import topic_api, quiz_api, question_api, topic_quizzes_api, quiz_questions_api, login_api, profile_api, submit_quiz_api
+from .views import topic_api, quiz_api, question_api, topic_quizzes_api, quiz_questions_api, login_api, profile_api, submit_quiz_api, attempt_history_api
 
 
 urlpatterns = [
@@ -51,6 +51,12 @@ urlpatterns = [
         'submit-quiz/',
         submit_quiz_api,
         name='submit_quiz_api'
+    ),
+    
+    path(
+        'attempt-history/',
+        attempt_history_api,
+        name='attempt_history_api'
     ),
 
 ]

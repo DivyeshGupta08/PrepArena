@@ -3,7 +3,8 @@ from rest_framework import serializers
 from quizzes.models import (
     Topic,
     Quiz,
-    Question
+    Question,
+    QuizAttempt
 )
 
 
@@ -43,3 +44,13 @@ class QuizSubmissionSerializer(
     answers = serializers.DictField(
         child=serializers.CharField()
     )
+    
+class QuizAttemptSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = QuizAttempt
+
+        fields = "__all__"
