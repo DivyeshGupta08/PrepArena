@@ -49,8 +49,44 @@ class QuizAttemptSerializer(
     serializers.ModelSerializer
 ):
 
+    username = serializers.CharField(
+        source='user.username',
+        read_only=True
+    )
+
+    quiz_title = serializers.CharField(
+        source='quiz.title',
+        read_only=True
+    )
+
+    topic = serializers.CharField(
+        source='quiz.topic.name',
+        read_only=True
+    )
+
     class Meta:
 
         model = QuizAttempt
 
-        fields = "__all__"
+        fields = [
+
+            'id',
+
+            'username',
+
+            'quiz',
+
+            'quiz_title',
+
+            'topic',
+
+            'score',
+
+            'percentage',
+
+            'started_at',
+
+            'submitted_at',
+
+            'duration_seconds'
+        ]
