@@ -5,8 +5,9 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from quizzes.models import Topic, Quiz, Question
-from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer
+from quizzes.models import Topic, Quiz, Question, QuizAttempt, UserAnswer
+from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer
+from django.utils import timezone
 
 @api_view(['GET'])
 def topic_api(request):
@@ -146,5 +147,85 @@ def profile_api(request):
         'email': request.user.email,
 
         'id': request.user.id
+
+    })
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def submit_quiz_api(request):
+
+    serializer = QuizSubmissionSerializer(
+        data=request.data
+    )
+
+    if not serializer.is_valid():
+
+        return Response(
+            serializer.errors,
+            status=400
+        )
+
+    quiz = get_object_or_404(
+        Quiz,
+        id=serializer.validated_data['quiz_id']
+    )
+
+    answers = serializer.validated_data['answers']
+
+    questions = Question.objects.filter(
+        quiz=quiz
+    )
+
+    attempt = QuizAttempt.objects.create(
+        user=request.user,
+        quiz=quiz
+    )
+
+    score = 0
+
+    for question in questions:
+
+        selected_option = answers.get(
+            str(question.id),
+            ""
+        )
+
+        is_correct = (
+            selected_option.upper() ==
+            question.correct_option.upper()
+        )
+
+        if is_correct:
+            score += 1
+
+        UserAnswer.objects.create(
+            attempt=attempt,
+            question=question,
+            selected_option=selected_option,
+            is_correct=is_correct
+        )
+
+    total_questions = questions.count()
+
+    percentage = (
+        score / total_questions * 100
+        if total_questions > 0
+        else 0
+    )
+
+    attempt.score = score
+    attempt.percentage = percentage
+    attempt.submitted_at = timezone.now()
+
+    attempt.save()
+
+    return Response({
+
+        "score": score,
+
+        "total_questions": total_questions,
+
+        "percentage": percentage
 
     })

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import topic_api, quiz_api, question_api, topic_quizzes_api, quiz_questions_api, login_api, profile_api
+from .views import topic_api, quiz_api, question_api, topic_quizzes_api, quiz_questions_api, login_api, profile_api, submit_quiz_api
 
 
 urlpatterns = [
@@ -45,6 +45,12 @@ urlpatterns = [
       'profile/',
         profile_api,
         name='profile_api'
+    ),
+    
+    path(
+        'submit-quiz/',
+        submit_quiz_api,
+        name='submit_quiz_api'
     ),
 
 ]
