@@ -6,8 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from quizzes.models import Topic, Quiz, Question, QuizAttempt, UserAnswer
-from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer, QuizAttemptSerializer
+from .serializers import TopicSerializer, QuizSerializer, QuestionSerializer, QuizSubmissionSerializer, QuizAttemptSerializer, DashboardSerializer
 from django.utils import timezone
+from django.db.models import Avg, Max, Min
+from resources.models import StudyResource
 
 @api_view(['GET'])
 def topic_api(request):
@@ -259,6 +261,148 @@ def attempt_detail_api(request, attempt_id):
 
     serializer = QuizAttemptSerializer(
         attempt
+    )
+
+    return Response(
+        serializer.data
+    )
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def dashboard_api(request):
+
+    attempts = QuizAttempt.objects.filter(
+        user=request.user
+    )
+
+    total_attempts = attempts.count()
+
+    average_percentage = (
+        attempts.aggregate(
+            Avg('percentage')
+        )['percentage__avg']
+        or 0
+    )
+
+    highest_score = (
+        attempts.aggregate(
+            Max('score')
+        )['score__max']
+        or 0
+    )
+
+    lowest_score = (
+        attempts.aggregate(
+            Min('score')
+        )['score__min']
+        or 0
+    )
+
+    topic_scores = {}
+
+    for attempt in attempts:
+
+        topic = attempt.quiz.topic.name
+
+        topic_scores.setdefault(
+            topic,
+            []
+        )
+
+        topic_scores[topic].append(
+            attempt.percentage
+        )
+
+    weak_topic = ""
+
+    strong_topic = ""
+
+    if topic_scores:
+
+        averages = {
+
+            topic: sum(scores) / len(scores)
+
+            for topic, scores in topic_scores.items()
+
+        }
+
+        weak_topic = min(
+            averages,
+            key=averages.get
+        )
+
+        strong_topic = max(
+            averages,
+            key=averages.get
+        )
+
+    interview_readiness = round(
+        average_percentage,
+        2
+    )
+
+    if interview_readiness >= 80:
+
+        grade = "A"
+
+    elif interview_readiness >= 60:
+
+        grade = "B"
+
+    elif interview_readiness >= 40:
+
+        grade = "C"
+
+    else:
+
+        grade = "D"
+
+    if interview_readiness >= 80:
+
+        recommendation = (
+            "You are interview ready."
+        )
+
+    elif interview_readiness >= 60:
+
+        recommendation = (
+            "Practice weak topics to improve confidence."
+        )
+
+    else:
+
+        recommendation = (
+            f"Focus on {weak_topic} before attempting interviews."
+        )
+
+    data = {
+
+        "total_attempts": total_attempts,
+
+        "average_percentage": round(
+            average_percentage,
+            2
+        ),
+
+        "highest_score": highest_score,
+
+        "lowest_score": lowest_score,
+
+        "weak_topic": weak_topic,
+
+        "strong_topic": strong_topic,
+
+        "grade": grade,
+
+        "interview_readiness": interview_readiness,
+
+        "recommendation": recommendation,
+    }
+
+    serializer = DashboardSerializer(
+        data
     )
 
     return Response(

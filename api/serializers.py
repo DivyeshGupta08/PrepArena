@@ -104,3 +104,25 @@ class QuizAttemptSerializer(
 
             'duration_seconds'
         ]
+        
+class DashboardSerializer(
+    serializers.Serializer
+):
+
+    total_attempts = serializers.IntegerField()
+
+    average_percentage = serializers.FloatField()
+
+    highest_score = serializers.IntegerField()
+
+    lowest_score = serializers.IntegerField()
+
+    weak_topic = serializers.CharField()
+
+    strong_topic = serializers.CharField()
+
+    grade = serializers.CharField()
+
+    interview_readiness = serializers.FloatField()
+
+    recommendation = serializers.CharField()

@@ -1,7 +1,18 @@
 from django.urls import path
 
-from .views import topic_api, quiz_api, question_api, topic_quizzes_api, quiz_questions_api, login_api, profile_api, submit_quiz_api, attempt_history_api, attempt_detail_api
-
+from .views import (
+    topic_api,
+    quiz_api,
+    question_api,
+    topic_quizzes_api,
+    quiz_questions_api,
+    login_api,
+    profile_api,
+    submit_quiz_api,
+    attempt_history_api,
+    attempt_detail_api,
+    dashboard_api
+)
 
 urlpatterns = [
 
@@ -63,6 +74,12 @@ urlpatterns = [
         'attempt/<int:attempt_id>/',
         attempt_detail_api,
         name='attempt_detail_api'
+    ),
+    
+    path(
+        'dashboard/',
+        dashboard_api,
+        name='dashboard_api'
     ),
 
 ]
