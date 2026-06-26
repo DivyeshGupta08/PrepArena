@@ -17,13 +17,37 @@ class TopicSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class QuizSerializer(serializers.ModelSerializer):
+class QuizSerializer(
+    serializers.ModelSerializer
+):
+
+    topic_name = serializers.CharField(
+        source='topic.name',
+        read_only=True
+    )
 
     class Meta:
 
         model = Quiz
 
-        fields = "__all__"
+        fields = [
+
+            'id',
+
+            'title',
+
+            'description',
+
+            'topic',
+
+            'topic_name',
+
+            'time_limit_minutes',
+
+            'is_published',
+
+            'created_at'
+        ]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -54,13 +78,7 @@ class QuizAttemptSerializer(
         read_only=True
     )
 
-    quiz_title = serializers.CharField(
-        source='quiz.title',
-        read_only=True
-    )
-
-    topic = serializers.CharField(
-        source='quiz.topic.name',
+    quiz = QuizSerializer(
         read_only=True
     )
 
@@ -75,10 +93,6 @@ class QuizAttemptSerializer(
             'username',
 
             'quiz',
-
-            'quiz_title',
-
-            'topic',
 
             'score',
 
