@@ -1,52 +1,114 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Topics</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>Interview Topics</h1>
+{% block title %}
+Interview Topics | PrepArena
+{% endblock %}
 
-<form method="GET">
+{% block content %}
 
-    <input
-        type="text"
-        name="search"
-        placeholder="Search Topic"
-        value="{{ search_query }}"
-    >
+<div class="container py-5">
 
-    <button type="submit">
-        Search
-    </button>
+    <div class="text-center mb-5">
 
-</form>
+        <h1 class="fw-bold">
+            Interview Topics
+        </h1>
 
-<br>
+        <p class="text-muted">
+            Choose a topic and start preparing for your next interview.
+        </p>
 
-{% for topic in topics %}
+    </div>
 
-<div style="border:1px solid black;padding:10px;margin:10px;">
+    <form method="GET" class="mb-5">
 
-    <h3>{{ topic.name }}</h3>
+        <div class="row justify-content-center">
 
-    <p>{{ topic.description }}</p>
+            <div class="col-md-6">
 
-    <a href="{% url 'quiz_list' topic.id %}">
-        View Quizzes
-    </a>
+                <div class="input-group">
+
+                    <input type="text" class="form-control" name="search" placeholder="Search topics..."
+                        value="{{ search_query }}">
+
+                    <button class="btn btn-primary" type="submit">
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="row">
+
+        {% for topic in topics %}
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="card h-100 shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="text-center mb-3">
+
+                        {% if topic.icon %}
+
+                        <i class="{{ topic.icon }} fa-3x text-primary"></i>
+
+                        {% else %}
+
+                        <i class="fa-solid fa-book fa-3x text-primary"></i>
+
+                        {% endif %}
+
+                    </div>
+
+                    <h4 class="card-title text-center">
+                        {{ topic.name }}
+                    </h4>
+
+                    <p class="card-text text-muted">
+                        {{ topic.description }}
+                    </p>
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid">
+
+                        <a href="{% url 'quiz_list' topic.id %}" class="btn btn-outline-primary">
+                            View Quizzes
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center">
+
+            <h3>No topics found</h3>
+
+            <p class="text-muted">
+                Try another search keyword.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 
 </div>
 
-{% empty %}
-
-<h3>No topics found.</h3>
-
-<p>
-Try another search keyword.
-</p>
-
-{% endfor %}
-
-</body>
-</html>
+{% endblock %}

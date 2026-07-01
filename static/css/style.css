@@ -1,0 +1,26 @@
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f8f9fa;
+}
+
+.card{
+    transition:.3s;
+    border-radius:15px;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 15px 30px rgba(0,0,0,.12);
+}
+
+.btn{
+    border-radius:10px;
+}
+
+.navbar-brand{
+    font-weight:700;
+}
+
+footer{
+    margin-top:80px;
+}
