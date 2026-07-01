@@ -1,13 +1,127 @@
-<h2>Signup</h2>
+{% extends 'base.html' %}
 
-<form method="post">
+{% block title %}
+Sign Up | PrepArena
+{% endblock %}
 
-    {% csrf_token %}
+{% block content %}
 
-    {{ form.as_p }}
+<div class="row justify-content-center my-5">
 
-    <button type="submit">
-        Register
-    </button>
+    <div class="col-md-7 col-lg-6">
 
-</form>
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-body p-5">
+
+                <div class="text-center mb-4">
+
+                    <h2 class="fw-bold">
+                        Create Account
+                    </h2>
+
+                    <p class="text-muted">
+                        Join PrepArena and start your interview preparation.
+                    </p>
+
+                </div>
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Username
+                        </label>
+
+                        {{ form.username }}
+
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        {{ form.email }}
+
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Password
+                        </label>
+
+                        {{ form.password1 }}
+
+                        <small class="text-muted">
+                            Minimum 8 characters.
+                        </small>
+
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.password1.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Confirm Password
+                        </label>
+
+                        {{ form.password2 }}
+
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.password2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg">
+
+                            Register
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <p class="text-center mb-0">
+
+                    Already have an account?
+
+                    <a href="{% url 'login' %}">
+                        Login
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home | PrepArena
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center py-5">
+
+    <h1 class="display-3 fw-bold">
+        PrepArena
+    </h1>
+
+    <p class="lead mt-3">
+        Your Complete Interview Preparation Platform
+    </p>
+
+    <div class="mt-4">
+
+        <a
+            href="{% url 'topic_list' %}"
+            class="btn btn-primary btn-lg me-2"
+        >
+            Start Quiz
+        </a>
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="btn btn-outline-dark btn-lg"
+        >
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="row text-center">
+
+    <div class="col-md-3 mb-4">
+
+        <h2>📚</h2>
+
+        <h4>Multiple Topics</h4>
+
+        <p>
+            Practice Aptitude, SQL, Python,
+            HTML, CSS and more.
+        </p>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <h2>📊</h2>
+
+        <h4>Analytics</h4>
+
+        <p>
+            Track your improvement with
+            charts and statistics.
+        </p>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <h2>🏆</h2>
+
+        <h4>Leaderboard</h4>
+
+        <p>
+            Compare your performance
+            with other users.
+        </p>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <h2>🎯</h2>
+
+        <h4>Interview Ready</h4>
+
+        <p>
+            Improve your confidence
+            before interviews.
+        </p>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="row text-center">
+
+    <div class="col-md-4">
+
+        <h1 class="display-5 fw-bold">
+            1000+
+        </h1>
+
+        <p>Questions</p>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <h1 class="display-5 fw-bold">
+            50+
+        </h1>
+
+        <p>Quizzes</p>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <h1 class="display-5 fw-bold">
+            100+
+        </h1>
+
+        <p>Resources</p>
+
+    </div>
+
+</div>
+
+{% endblock %}

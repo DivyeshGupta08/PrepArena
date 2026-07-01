@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 from rest_framework import permissions
 
@@ -30,6 +31,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
 
+    path('', views.home, name='home'),
+    
     path('admin/', admin.site.urls),
 
     path('', include('accounts.urls')),
