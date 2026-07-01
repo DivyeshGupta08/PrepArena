@@ -3,7 +3,10 @@ from django.shortcuts import (
     get_object_or_404,
     redirect
 )
+
 from django.utils import timezone
+
+from django.contrib.auth.decorators import login_required
 
 from .models import (
     Topic,
@@ -37,7 +40,8 @@ def topic_list(request):
             'search_query': search_query
         }
     )
-    
+
+
 def quiz_list(request, topic_id):
 
     topic = get_object_or_404(
@@ -70,8 +74,9 @@ def quiz_list(request, topic_id):
             'search_query': search_query
         }
     )
-    
-    
+
+
+@login_required
 def quiz_start(request, quiz_id):
 
     quiz = get_object_or_404(
@@ -79,7 +84,7 @@ def quiz_start(request, quiz_id):
         id=quiz_id
     )
 
-    question_count = quiz.question_set.count()
+    question_count = quiz.questions.count()
 
     return render(
         request,
@@ -89,7 +94,9 @@ def quiz_start(request, quiz_id):
             'question_count': question_count
         }
     )
-    
+
+
+@login_required
 def take_quiz(request, quiz_id):
 
     quiz = get_object_or_404(
@@ -117,6 +124,8 @@ def take_quiz(request, quiz_id):
             )
 
             is_correct = (
+                selected_answer
+                and
                 selected_answer.upper() ==
                 question.correct_option.upper()
             )
@@ -127,16 +136,17 @@ def take_quiz(request, quiz_id):
             UserAnswer.objects.create(
                 attempt=attempt,
                 question=question,
-                selected_option=selected_answer
-                if selected_answer
-                else "",
+                selected_option=selected_answer if selected_answer else "",
                 is_correct=is_correct
             )
 
+        total_questions = questions.count()
+
         percentage = (
-            score /
-            questions.count()
-        ) * 100
+            score / total_questions * 100
+            if total_questions > 0
+            else 0
+        )
 
         attempt.score = score
         attempt.percentage = percentage
@@ -157,12 +167,15 @@ def take_quiz(request, quiz_id):
             'questions': questions
         }
     )
-    
+
+
+@login_required
 def quiz_result(request, attempt_id):
 
     attempt = get_object_or_404(
         QuizAttempt,
-        id=attempt_id
+        id=attempt_id,
+        user=request.user
     )
 
     return render(
@@ -173,11 +186,14 @@ def quiz_result(request, attempt_id):
         }
     )
 
+
+@login_required
 def review_answers(request, attempt_id):
 
     attempt = get_object_or_404(
         QuizAttempt,
-        id=attempt_id
+        id=attempt_id,
+        user=request.user
     )
 
     answers = UserAnswer.objects.filter(
