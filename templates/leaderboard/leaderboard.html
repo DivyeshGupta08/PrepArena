@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Leaderboard | PrepArena
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <i class="fa-solid fa-trophy fa-4x text-warning mb-3"></i>
+
+        <h1 class="fw-bold">
+
+            Leaderboard
+
+        </h1>
+
+        <p class="text-muted">
+
+            Top performers in PrepArena
+
+        </p>
+
+    </div>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Rank</th>
+
+                            <th>User</th>
+
+                            <th>Average %</th>
+
+                            <th>Total Attempts</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for user in leaderboard_data %}
+
+                        <tr>
+
+                            <td>
+
+                                {% if forloop.counter == 1 %}
+
+                                    🥇
+
+                                {% elif forloop.counter == 2 %}
+
+                                    🥈
+
+                                {% elif forloop.counter == 3 %}
+
+                                    🥉
+
+                                {% else %}
+
+                                    {{ forloop.counter }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <span class="fw-bold">
+
+                                    {{ user.user__username }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    {{ user.average_score|floatformat:2 }}%
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {{ user.total_attempts }}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="4" class="text-center">
+
+                                No leaderboard data available.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
