@@ -178,11 +178,29 @@ def quiz_result(request, attempt_id):
         user=request.user
     )
 
+    if attempt.percentage >= 90:
+        grade = "A+"
+        message = "Outstanding! You are interview ready."
+    elif attempt.percentage >= 75:
+        grade = "A"
+        message = "Excellent performance. Keep practicing."
+    elif attempt.percentage >= 60:
+        grade = "B"
+        message = "Good job! A little more practice will make you even better."
+    elif attempt.percentage >= 40:
+        grade = "C"
+        message = "Fair attempt. Revise the weak topics."
+    else:
+        grade = "D"
+        message = "Keep practicing. You'll improve with consistency."
+
     return render(
         request,
-        'quizzes/result.html',
+        "quizzes/result.html",
         {
-            'attempt': attempt
+            "attempt": attempt,
+            "grade": grade,
+            "message": message,
         }
     )
 
