@@ -1,80 +1,171 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ quiz.title }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>{{ quiz.title }}</h1>
+{% block title %}
+{{ quiz.title }} | PrepArena
+{% endblock %}
 
-<form method="POST">
+{% block content %}
 
-{% csrf_token %}
+<div class="container py-5">
 
-{% for question in questions %}
+    <div class="text-center mb-5">
 
-<hr>
+        <h1 class="fw-bold">
 
-<h3>
-Q{{ forloop.counter }}.
-{{ question.question_text }}
-</h3>
+            <i class="fa-solid fa-laptop-code text-primary"></i>
 
-<label>
-<input
-type="radio"
-name="question_{{ question.id }}"
-value="A">
+            {{ quiz.title }}
 
-{{ question.option_a }}
+        </h1>
 
-</label>
+        <p class="text-muted">
 
-<br><br>
+            Answer all the questions carefully before submitting.
 
-<label>
-<input
-type="radio"
-name="question_{{ question.id }}"
-value="B">
+        </p>
 
-{{ question.option_b }}
+    </div>
 
-</label>
+    <form method="POST">
 
-<br><br>
+        {% csrf_token %}
 
-<label>
-<input
-type="radio"
-name="question_{{ question.id }}"
-value="C">
+        <div class="progress mb-4" style="height: 10px;">
 
-{{ question.option_c }}
+            <div
+                class="progress-bar"
+                role="progressbar"
+                style="width:100%;"
+            >
+            </div>
 
-</label>
+        </div>
 
-<br><br>
+        {% for question in questions %}
 
-<label>
-<input
-type="radio"
-name="question_{{ question.id }}"
-value="D">
+        <div class="card shadow-sm border-0 mb-4">
 
-{{ question.option_d }}
+            <div class="card-body">
 
-</label>
+                <h5 class="fw-bold mb-4">
 
-<br><br>
+                    <span class="badge bg-primary me-2">
 
-{% endfor %}
+                        Question {{ forloop.counter }}
 
-<button type="submit">
-Submit Quiz
-</button>
+                    </span>
 
-</form>
+                    {{ question.question_text }}
 
-</body>
-</html>
+                </h5>
+
+                <div class="form-check mb-3">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        id="q{{ question.id }}a"
+                        value="A"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="q{{ question.id }}a"
+                    >
+
+                        {{ question.option_a }}
+
+                    </label>
+
+                </div>
+
+                <div class="form-check mb-3">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        id="q{{ question.id }}b"
+                        value="B"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="q{{ question.id }}b"
+                    >
+
+                        {{ question.option_b }}
+
+                    </label>
+
+                </div>
+
+                <div class="form-check mb-3">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        id="q{{ question.id }}c"
+                        value="C"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="q{{ question.id }}c"
+                    >
+
+                        {{ question.option_c }}
+
+                    </label>
+
+                </div>
+
+                <div class="form-check">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        id="q{{ question.id }}d"
+                        value="D"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="q{{ question.id }}d"
+                    >
+
+                        {{ question.option_d }}
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <div class="d-grid">
+
+            <button
+                type="submit"
+                class="btn btn-success btn-lg"
+            >
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Submit Quiz
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
