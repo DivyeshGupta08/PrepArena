@@ -206,6 +206,38 @@ def take_quiz(request, quiz_id):
 
 # Level System
         profile.level = (profile.xp // 100) + 1
+        
+        # -----------------------------------
+# Badge System
+# -----------------------------------
+
+        badges = 0
+
+# First Quiz
+        if profile.total_attempts >= 1:
+            badges += 1
+
+# 5 Quizzes
+        if profile.total_attempts >= 5:
+            badges += 1
+
+# 10 Quizzes
+        if profile.total_attempts >= 10:
+            badges += 1
+
+# 500 XP
+        if profile.xp >= 500:
+            badges += 1
+
+# 7-Day Streak
+        if profile.streak >= 7:
+            badges += 1
+
+# Perfect Score
+        if percentage == 100:
+            badges += 1
+
+        profile.badges = badges
 
         profile.save()
 
