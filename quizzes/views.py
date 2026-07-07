@@ -5,6 +5,7 @@ from django.shortcuts import (
 )
 
 from django.utils import timezone
+from django.db.models import Avg
 
 from django.contrib.auth.decorators import login_required
 
@@ -154,8 +155,35 @@ def take_quiz(request, quiz_id):
 
         attempt.save()
 
+# -----------------------------------
+# Update User Profile
+# -----------------------------------
+
+        profile = request.user.profile
+
+        profile.total_attempts += 1
+
+        attempts = QuizAttempt.objects.filter(user=request.user)
+
+        profile.overall_average = round(
+            attempts.aggregate(
+                Avg("percentage")
+            )["percentage__avg"] or 0,
+            2
+        )
+
+# XP System
+        xp_earned = int(percentage)
+
+        profile.xp += xp_earned
+
+# Level System
+        profile.level = (profile.xp // 100) + 1
+
+        profile.save()
+
         return redirect(
-            'quiz_result',
+            "quiz_result",
             attempt.id
         )
 
