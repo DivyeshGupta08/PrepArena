@@ -1,54 +1,161 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Quiz List</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>{{ topic.name }} Quizzes</h1>
+{% block title %}
+{{ topic.name }} Quizzes | PrepArena
+{% endblock %}
 
-<form method="GET">
+{% block content %}
 
-    <input
-        type="text"
-        name="search"
-        placeholder="Search Quiz"
-        value="{{ search_query }}"
-    >
+<div class="container py-5">
 
-    <button type="submit">
-        Search
-    </button>
+    <div class="text-center mb-5">
 
-</form>
+        <h1 class="fw-bold">
+            {{ topic.name }} Quizzes
+        </h1>
 
-<br>
+        <p class="text-muted">
+            Select a quiz and test your knowledge.
+        </p>
 
-{% for quiz in quizzes %}
+    </div>
 
-<div style="border:1px solid black;padding:10px;margin:10px;">
+    <form method="GET" class="mb-5">
 
-    <h3>{{ quiz.title }}</h3>
+        <div class="row justify-content-center">
 
-    <p>{{ quiz.description }}</p>
+            <div class="col-md-6">
 
-    <p>
-        Time:
-        {{ quiz.time_limit_minutes }}
-        Minutes
-    </p>
+                <div class="input-group">
 
-    <a href="{% url 'quiz_start' quiz.id %}">
-        Start Quiz
-    </a>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="search"
+                        placeholder="Search quizzes..."
+                        value="{{ search_query }}"
+                    >
+
+                    <button
+                        class="btn btn-primary"
+                        type="submit"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="row">
+
+        {% for quiz in quizzes %}
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="card h-100 shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <h4 class="card-title fw-bold">
+
+                        <i class="fa-solid fa-file-circle-question text-primary"></i>
+
+                        {{ quiz.title }}
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        {{ quiz.description }}
+
+                    </p>
+
+                    <hr>
+
+                    <p class="mb-2">
+
+                        <i class="fa-regular fa-clock text-primary"></i>
+
+                        <strong>Time Limit:</strong>
+
+                        {{ quiz.time_limit_minutes }} Minutes
+
+                    </p>
+
+                    <p>
+
+                        <i class="fa-solid fa-list-check text-success"></i>
+
+                        <strong>Questions:</strong>
+
+                        {{ quiz.questions.count }}
+
+                    </p>
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid">
+
+                        <a
+                            href="{% url 'quiz_start' quiz.id %}"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="fa-solid fa-play"></i>
+
+                            Start Quiz
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center">
+
+            <i class="fa-solid fa-circle-info fa-3x text-secondary mb-3"></i>
+
+            <h3>No quizzes available</h3>
+
+            <p class="text-muted">
+                Try another search or choose another topic.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        <a
+            href="{% url 'topic_list' %}"
+            class="btn btn-outline-secondary"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Topics
+
+        </a>
+
+    </div>
 
 </div>
 
-{% empty %}
-
-<p>No quizzes available.</p>
-
-{% endfor %}
-
-</body>
-</html>
+{% endblock %}
