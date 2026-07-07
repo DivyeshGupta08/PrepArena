@@ -1,158 +1,333 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Dashboard
+Dashboard | PrepArena
 {% endblock %}
 
 {% block content %}
 
-    <h1>Dashboard</h1>
+<div class="container py-5">
 
-    <hr>
+    <div class="text-center mb-5">
 
-    <h2>Total Attempts: {{ total_attempts }}</h2>
+        <i class="fa-solid fa-chart-line fa-4x text-primary mb-3"></i>
 
-    <h2>Average Percentage: {{ average_percentage }}%</h2>
+        <h1 class="fw-bold">
+            Dashboard
+        </h1>
 
-    <h2>Highest Score: {{ highest_score }}</h2>
+        <p class="text-muted">
+            Track your interview preparation progress.
+        </p>
 
-    <h2>Lowest Score: {{ lowest_score }}</h2>
+    </div>
 
-    <hr>
+    <!-- Statistics -->
 
-    <h2>
-        Weakest Topic:
-        {% if weak_topic %}
-            {{ weak_topic }}
-        {% else %}
-            N/A
-        {% endif %}
-    </h2>
+    <div class="row g-4 mb-5">
 
-    <h2>
-        Strongest Topic:
-        {% if strong_topic %}
-            {{ strong_topic }}
-        {% else %}
-            N/A
-        {% endif %}
-    </h2>
+        <div class="col-md-3">
 
-    <h2>
-        Performance Grade:
-        {{ grade }}
-    </h2>
+            <div class="card shadow border-0 text-center h-100">
 
-    <h2>
-        Readiness Score:
-        {{ readiness_score }}%
-    </h2>
+                <div class="card-body">
 
-    <h2>
-        Interview Readiness:
-        {{ interview_readiness }}%
-    </h2>
+                    <i class="fa-solid fa-clipboard-list fa-2x text-primary mb-3"></i>
 
-    <h2>
-        Recommendation:
-    </h2>
+                    <h5>Total Attempts</h5>
 
-    <p>
-        {{ recommendation }}
-    </p>
+                    <h2>{{ total_attempts }}</h2>
 
-    <hr>
+                </div>
 
-    <h2>Recommended Resources</h2>
+            </div>
 
-    {% if resources %}
+        </div>
 
-        <ul>
+        <div class="col-md-3">
 
-            {% for resource in resources %}
+            <div class="card shadow border-0 text-center h-100">
 
-                <li>
-                    <a href="{{ resource.url }}" target="_blank">
-                        {{ resource.title }}
-                    </a>
-                </li>
+                <div class="card-body">
 
-            {% endfor %}
+                    <i class="fa-solid fa-percent fa-2x text-success mb-3"></i>
 
-        </ul>
+                    <h5>Average</h5>
 
-    {% else %}
+                    <h2>{{ average_percentage }}%</h2>
 
-        <p>No recommendations available.</p>
+                </div>
 
-    {% endif %}
+            </div>
 
-    <hr>
+        </div>
 
-    <h2>Performance Trend</h2>
+        <div class="col-md-3">
 
-    <canvas
-        id="attemptChart"
-        width="800"
-        height="300">
-    </canvas>
+            <div class="card shadow border-0 text-center h-100">
 
-    <br><br>
+                <div class="card-body">
 
-    <h2>Topic Performance</h2>
+                    <i class="fa-solid fa-trophy fa-2x text-warning mb-3"></i>
 
-    <canvas
-        id="topicChart"
-        width="800"
-        height="300">
-    </canvas>
+                    <h5>Highest Score</h5>
 
-    <script>
+                    <h2>{{ highest_score }}</h2>
 
-        const attemptLabels =
-        {{ attempt_labels|safe }};
+                </div>
 
-        const attemptScores =
-        {{ attempt_scores|safe }};
+            </div>
 
-        new Chart(
-            document.getElementById('attemptChart'),
-            {
-                type: 'line',
+        </div>
 
-                data: {
-                    labels: attemptLabels,
+        <div class="col-md-3">
 
-                    datasets: [{
-                        label: 'Percentage',
-                        data: attemptScores
-                    }]
-                }
-            }
-        );
+            <div class="card shadow border-0 text-center h-100">
 
-        const topicLabels =
-        {{ topic_labels|safe }};
+                <div class="card-body">
 
-        const topicPercentages =
-        {{ topic_percentages|safe }};
+                    <i class="fa-solid fa-bullseye fa-2x text-danger mb-3"></i>
 
-        new Chart(
-            document.getElementById('topicChart'),
-            {
-                type: 'bar',
+                    <h5>Readiness</h5>
 
-                data: {
-                    labels: topicLabels,
+                    <h2>{{ readiness_score }}%</h2>
 
-                    datasets: [{
-                        label: 'Topic Performance',
-                        data: topicPercentages
-                    }]
-                }
-            }
-        );
+                </div>
 
-    </script>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Performance -->
+
+    <div class="row mb-5">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h4 class="mb-3">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Performance Trend
+
+                    </h4>
+
+                    <canvas id="attemptChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h4 class="mb-3">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        Topic Performance
+
+                    </h4>
+
+                    <canvas id="topicChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Summary -->
+
+    <div class="row mb-5">
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body">
+
+                    <h4>
+
+                        <i class="fa-solid fa-medal text-warning"></i>
+
+                        Performance
+
+                    </h4>
+
+                    <hr>
+
+                    <p>
+
+                        <strong>Grade:</strong>
+
+                        {{ grade }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Strongest Topic:</strong>
+
+                        {{ strong_topic|default:"N/A" }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Weakest Topic:</strong>
+
+                        {{ weak_topic|default:"N/A" }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Interview Readiness:</strong>
+
+                        {{ interview_readiness }}%
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body">
+
+                    <h4>
+
+                        <i class="fa-solid fa-lightbulb text-primary"></i>
+
+                        Recommendation
+
+                    </h4>
+
+                    <hr>
+
+                    <p>
+
+                        {{ recommendation }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Resources -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <h4>
+
+                <i class="fa-solid fa-book"></i>
+
+                Recommended Resources
+
+            </h4>
+
+            <hr>
+
+            {% if resources %}
+
+                <div class="list-group">
+
+                    {% for resource in resources %}
+
+                        <a
+                            href="{{ resource.url }}"
+                            target="_blank"
+                            class="list-group-item list-group-item-action"
+                        >
+
+                            {{ resource.title }}
+
+                        </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+
+                    No recommendations available.
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const attemptLabels = {{ attempt_labels|safe }};
+const attemptScores = {{ attempt_scores|safe }};
+
+new Chart(
+document.getElementById('attemptChart'),
+{
+type:'line',
+data:{
+labels:attemptLabels,
+datasets:[{
+label:'Percentage',
+data:attemptScores,
+fill:false,
+tension:.4
+}]
+}
+}
+);
+
+const topicLabels = {{ topic_labels|safe }};
+const topicPercentages = {{ topic_percentages|safe }};
+
+new Chart(
+document.getElementById('topicChart'),
+{
+type:'bar',
+data:{
+labels:topicLabels,
+datasets:[{
+label:'Performance',
+data:topicPercentages
+}]
+}
+}
+);
+
+</script>
 
 {% endblock %}
