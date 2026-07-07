@@ -6,7 +6,7 @@ from django.shortcuts import (
 
 from django.utils import timezone
 from django.db.models import Avg
-
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 
 from .models import (
@@ -160,8 +160,35 @@ def take_quiz(request, quiz_id):
 # -----------------------------------
 
         profile = request.user.profile
+        
+        # -----------------------------------
+# Daily Streak System
+# -----------------------------------
+
+        today = timezone.now().date()
+
+        if profile.last_activity is None:
+
+            profile.streak = 1
+
+        elif profile.last_activity == today:
+
+    # Already active today
+            pass
+
+        elif profile.last_activity == today - timedelta(days=1):
+
+            profile.streak += 1
+
+        else:
+
+            profile.streak = 1
+
+        profile.last_activity = today
 
         profile.total_attempts += 1
+        
+        
 
         attempts = QuizAttempt.objects.filter(user=request.user)
 
