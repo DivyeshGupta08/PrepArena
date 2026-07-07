@@ -1,26 +1,42 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
 My Profile
 {% endblock %}
 
+
+
 {% block content %}
+
 
 <div class="container py-5">
 
+
     <div class="text-center mb-5">
+
 
         <h2 class="fw-bold">
             👤 {{ request.user.username }}
         </h2>
 
+
         <p class="text-muted">
             {{ request.user.email }}
         </p>
 
+
+        <h5>
+            {{ rank }}
+        </h5>
+
+
     </div>
 
+
+
     <div class="row">
+
 
         <div class="col-md-4 mb-4">
 
@@ -28,69 +44,107 @@ My Profile
 
                 <div class="card-body">
 
+
                     <h3>🔥</h3>
 
-                    <h4>{{ profile.streak }}</h4>
+                    <h4>
+                        {{ profile.streak }}
+                    </h4>
+
 
                     <p class="text-muted">
                         Current Streak
                     </p>
 
+
                 </div>
 
             </div>
 
         </div>
 
+
+
+
+
         <div class="col-md-4 mb-4">
+
 
             <div class="card shadow border-0 text-center">
 
+
                 <div class="card-body">
+
 
                     <h3>⭐</h3>
 
-                    <h4>{{ profile.xp }}</h4>
+
+                    <h4>
+                        {{ profile.xp }}
+                    </h4>
+
 
                     <p class="text-muted">
-
                         Experience Points
-
                     </p>
+
 
                 </div>
 
+
             </div>
 
+
         </div>
+
+
+
+
+
 
         <div class="col-md-4 mb-4">
 
+
             <div class="card shadow border-0 text-center">
+
 
                 <div class="card-body">
 
+
                     <h3>🏅</h3>
 
-                    <h4>{{ profile.badges }}</h4>
+
+                    <h4>
+                        {{ badge_list|length }}
+                    </h4>
+
 
                     <p class="text-muted">
-
                         Badges Earned
-
                     </p>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
+
+
     </div>
+
+
+
+
 
     <div class="card shadow border-0 mb-4">
 
+
         <div class="card-body">
+
 
             <h4>
 
@@ -98,7 +152,10 @@ My Profile
 
             </h4>
 
+
+
             <div class="progress mt-3">
+
 
                 <div
                     class="progress-bar"
@@ -109,62 +166,152 @@ My Profile
 
                 </div>
 
+
             </div>
+
+
 
             <small class="text-muted">
 
+
                 {{ profile.xp }} / {{ next_level_xp }} XP
+
 
             </small>
 
+
+
         </div>
 
+
     </div>
+
+
+
+
+
+
 
     <div class="row">
 
-        <div class="col-md-6">
+
+        <div class="col-md-6 mb-4">
+
 
             <div class="card shadow border-0">
 
+
                 <div class="card-body">
 
-                    <h5>Total Attempts</h5>
+
+                    <h5>
+                        Total Attempts
+                    </h5>
+
 
                     <h2>
-
                         {{ profile.total_attempts }}
-
                     </h2>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
-        <div class="col-md-6">
+
+
+
+
+        <div class="col-md-6 mb-4">
+
 
             <div class="card shadow border-0">
 
-                <div class="card-body">
 
-                    <h5>Overall Average</h5>
+                <div class="card-body>
+
+
+                    <h5>
+                        Overall Average
+                    </h5>
+
 
                     <h2>
-
                         {{ profile.overall_average }}%
-
                     </h2>
+
 
                 </div>
 
+
             </div>
 
+
         </div>
+
 
     </div>
 
+
+
+
+
+
+    <div class="card shadow border-0 mt-4">
+
+
+        <div class="card-body">
+
+
+            <h4>
+                🏆 Badges
+            </h4>
+
+
+            <hr>
+
+
+            {% if badge_list %}
+
+
+                {% for badge in badge_list %}
+
+
+                    <span class="badge bg-primary m-1 p-2">
+
+                        {{ badge }}
+
+                    </span>
+
+
+                {% endfor %}
+
+
+
+            {% else %}
+
+
+                <p class="text-muted">
+                    No badges earned yet.
+                </p>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+
 </div>
+
 
 {% endblock %}
