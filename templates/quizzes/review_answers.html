@@ -1,60 +1,171 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Review Answers</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>Answer Review</h1>
+{% block title %}
+Review Answers | PrepArena
+{% endblock %}
 
-{% for answer in answers %}
+{% block content %}
 
-<hr>
+<div class="container py-5">
 
-<h2>
-Question {{ forloop.counter }}
-</h2>
+    <div class="text-center mb-5">
 
-<p>
-{{ answer.question.question_text }}
-</p>
+        <i class="fa-solid fa-book-open-reader fa-4x text-primary mb-3"></i>
 
-<p>
-Your Answer:
-{{ answer.selected_option }}
-</p>
+        <h1 class="fw-bold">
+            Answer Review
+        </h1>
 
-<p>
-Correct Answer:
-{{ answer.question.correct_option }}
-</p>
+        <p class="text-muted">
+            Review your answers and learn from your mistakes.
+        </p>
 
-<p>
-Explanation:
-{{ answer.question.explanation }}
-</p>
+    </div>
 
-{% if answer.is_correct %}
+    {% for answer in answers %}
 
-<h3>
-✅ Correct
-</h3>
+    <div class="card shadow-sm border-0 mb-4">
 
-{% else %}
+        <div class="card-body">
 
-<h3>
-❌ Incorrect
-</h3>
+            <h5 class="fw-bold">
 
-{% endif %}
+                <span class="badge bg-primary me-2">
 
-{% endfor %}
+                    Question {{ forloop.counter }}
 
-<br>
+                </span>
 
-<a href="/quizzes/topics/">
-Back To Topics
-</a>
+                {{ answer.question.question_text }}
 
-</body>
-</html>
+            </h5>
+
+            <hr>
+
+            <p>
+
+                <strong>Your Answer:</strong>
+
+                {% if answer.selected_option %}
+
+                    {% if answer.is_correct %}
+
+                        <span class="badge bg-success">
+
+                            {{ answer.selected_option }}
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+
+                            {{ answer.selected_option }}
+
+                        </span>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <span class="badge bg-secondary">
+
+                        Not Answered
+
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+            <p>
+
+                <strong>Correct Answer:</strong>
+
+                <span class="badge bg-success">
+
+                    {{ answer.question.correct_option }}
+
+                </span>
+
+            </p>
+
+            {% if answer.question.explanation %}
+
+            <div class="alert alert-info">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                <strong>Explanation:</strong>
+
+                {{ answer.question.explanation }}
+
+            </div>
+
+            {% endif %}
+
+            {% if answer.is_correct %}
+
+                <div class="alert alert-success mb-0">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Correct Answer
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-danger mb-0">
+
+                    <i class="fa-solid fa-circle-xmark"></i>
+
+                    Incorrect Answer
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-warning text-center">
+
+        No answers found.
+
+    </div>
+
+    {% endfor %}
+
+    <div class="d-grid gap-3 mt-4">
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="btn btn-success btn-lg"
+        >
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            Go to Dashboard
+
+        </a>
+
+        <a
+            href="{% url 'topic_list' %}"
+            class="btn btn-outline-primary"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            Back to Topics
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
