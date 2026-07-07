@@ -66,12 +66,27 @@ def logout_view(request):
 
 
 @login_required
+@login_required
 def profile_view(request):
 
     profile = request.user.profile
 
+    current_level_xp = (profile.level - 1) * 100
+
+    next_level_xp = profile.level * 100
+
+    progress = profile.xp - current_level_xp
+
+    progress_percent = int(
+        (progress / 100) * 100
+    )
+
     return render(
         request,
-        'accounts/profile.html',
-        {'profile': profile}
+        "accounts/profile.html",
+        {
+            "profile": profile,
+            "progress_percent": progress_percent,
+            "next_level_xp": next_level_xp,
+        },
     )
