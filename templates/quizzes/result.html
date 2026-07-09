@@ -59,12 +59,79 @@ Quiz Result | PrepArena
 
                     </div>
 
+                    <hr class="my-5">
+
+                    <h3 class="mb-4">
+
+                        🤖 AI Interview Feedback
+
+                    </h3>
+
+                    <div class="card shadow-sm mb-3">
+
+                        <div class="card-body">
+
+                            <h5 class="text-success">
+
+                                ✅ Strengths
+
+                            </h5>
+
+                            <p>
+
+                                {{ feedback.strengths|default:"No strengths available." }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card shadow-sm mb-3">
+
+                        <div class="card-body">
+
+                            <h5 class="text-danger">
+
+                                ⚠ Weaknesses
+
+                            </h5>
+
+                            <p>
+
+                                {{ feedback.weaknesses|default:"No weaknesses detected." }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+
+                        <div class="card-body">
+
+                            <h5 class="text-primary">
+
+                                💡 Recommendations
+
+                            </h5>
+
+                            <p>
+
+                                {{ feedback.recommendations }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
                     <div class="d-grid gap-3 mt-4">
 
                         <a
                             href="{% url 'review_answers' attempt.id %}"
-                            class="btn btn-primary btn-lg"
-                        >
+                            class="btn btn-primary btn-lg">
 
                             <i class="fa-solid fa-book-open"></i>
 
@@ -74,8 +141,7 @@ Quiz Result | PrepArena
 
                         <a
                             href="{% url 'dashboard' %}"
-                            class="btn btn-outline-success"
-                        >
+                            class="btn btn-outline-success">
 
                             <i class="fa-solid fa-chart-line"></i>
 
@@ -85,8 +151,7 @@ Quiz Result | PrepArena
 
                         <a
                             href="{% url 'quiz_list' attempt.quiz.topic.id %}"
-                            class="btn btn-outline-secondary"
-                        >
+                            class="btn btn-outline-secondary">
 
                             <i class="fa-solid fa-arrow-rotate-right"></i>
 

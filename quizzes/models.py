@@ -133,3 +133,34 @@ class UserAnswer(models.Model):
     )
 
     is_correct = models.BooleanField(default=False)
+    
+class AIFeedback(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    attempt = models.OneToOneField(
+        QuizAttempt,
+        on_delete=models.CASCADE
+    )
+
+    strengths = models.TextField(
+        blank=True
+    )
+
+    weaknesses = models.TextField(
+        blank=True
+    )
+
+    recommendations = models.TextField(
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"Feedback - {self.user.username}"

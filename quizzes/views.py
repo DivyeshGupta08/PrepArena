@@ -8,13 +8,15 @@ from django.utils import timezone
 from django.db.models import Avg
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from .services import generate_feedback
 
 from .models import (
     Topic,
     Quiz,
     Question,
     QuizAttempt,
-    UserAnswer
+    UserAnswer,
+    AIFeedback
 )
 
 
@@ -265,20 +267,40 @@ def quiz_result(request, attempt_id):
         user=request.user
     )
 
-    if attempt.percentage >= 90:
-        grade = "A+"
-        message = "Outstanding! You are interview ready."
-    elif attempt.percentage >= 75:
+    feedback, created = AIFeedback.objects.get_or_create(
+        attempt=attempt,
+        defaults={
+            "user": request.user
+        }
+    )
+
+    if created:
+        feedback = generate_feedback(attempt)
+
+    percentage = attempt.percentage
+
+    if percentage >= 80:
+
         grade = "A"
-        message = "Excellent performance. Keep practicing."
-    elif attempt.percentage >= 60:
+
+        message = "Excellent performance! Keep it up."
+
+    elif percentage >= 60:
+
         grade = "B"
+
         message = "Good job! A little more practice will make you even better."
-    elif attempt.percentage >= 40:
+
+    elif percentage >= 40:
+
         grade = "C"
-        message = "Fair attempt. Revise the weak topics."
+
+        message = "Average performance. Focus on your weak areas."
+
     else:
+
         grade = "D"
+
         message = "Keep practicing. You'll improve with consistency."
 
     return render(
@@ -286,6 +308,7 @@ def quiz_result(request, attempt_id):
         "quizzes/result.html",
         {
             "attempt": attempt,
+            "feedback": feedback,
             "grade": grade,
             "message": message,
         }
