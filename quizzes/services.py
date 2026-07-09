@@ -1,72 +1,165 @@
+import google.generativeai as genai
+
+from decouple import config
+
 from .models import AIFeedback
+
+
+genai.configure(
+    api_key=config("GEMINI_API_KEY")
+)
+
+model = genai.GenerativeModel(
+    "gemini-1.5-flash"
+)
 
 
 def generate_feedback(attempt):
 
     user = attempt.user
 
+    quiz = attempt.quiz
+
     percentage = attempt.percentage
 
-    strengths = ""
+    total_questions = quiz.questions.count()
 
-    weaknesses = ""
+    correct_answers = attempt.answers.filter(
+        is_correct=True
+    ).count()
 
-    recommendations = ""
+    wrong_answers = total_questions - correct_answers
 
-    if percentage >= 80:
+    topic_name = quiz.topic.name
 
-        strengths = (
-            "Excellent performance. You have a strong understanding of this topic."
+    prompt = f"""
+You are an expert interview mentor.
+
+Analyze the following quiz result.
+
+Topic:
+{topic_name}
+
+Quiz Score:
+{percentage:.2f}%
+
+Correct Answers:
+{correct_answers}
+
+Wrong Answers:
+{wrong_answers}
+
+Provide feedback in three sections.
+
+Strengths:
+Weaknesses:
+Recommendations:
+
+Keep the feedback professional, encouraging and concise.
+"""
+
+    try:
+
+        response = model.generate_content(
+            prompt
         )
 
-        weaknesses = (
-            "No major weaknesses detected."
-        )
+        ai_feedback = response.text
 
-        recommendations = (
-            "Continue practicing advanced interview questions to maintain your performance."
-        )
+        strengths = ai_feedback
 
-    elif percentage >= 50:
+        weaknesses = ""
 
-        strengths = (
-            "You have a good understanding of the basic concepts."
-        )
+        recommendations = ""
 
-        weaknesses = (
-            "Some concepts still require more revision."
-        )
+    except Exception:
 
-        recommendations = (
-            "Revise the weak topics and solve more practice quizzes."
-        )
+        if percentage >= 80:
 
-    else:
+            strengths = (
+                f"You answered {correct_answers} out of "
+                f"{total_questions} questions correctly. "
+                f"You have an excellent understanding of "
+                f"{topic_name}."
+            )
 
-        strengths = (
-            "You attempted the quiz and identified your learning gaps."
-        )
+            weaknesses = (
+                "Very few mistakes were detected."
+            )
 
-        weaknesses = (
-            "Your fundamentals need improvement."
-        )
+            recommendations = (
+                "Practice advanced interview questions "
+                "to further strengthen your skills."
+            )
 
-        recommendations = (
-            "Review the study material carefully and practice beginner-level questions before attempting this quiz again."
-        )
+        elif percentage >= 60:
 
-    feedback = AIFeedback.objects.create(
+            strengths = (
+                "Your fundamentals are good."
+            )
 
-        user=user,
+            weaknesses = (
+                f"You missed {wrong_answers} questions."
+            )
+
+            recommendations = (
+                "Revise important concepts and attempt "
+                "another quiz."
+            )
+
+        elif percentage >= 40:
+
+            strengths = (
+                "You have a basic understanding."
+            )
+
+            weaknesses = (
+                "Your concepts are not yet consistent."
+            )
+
+            recommendations = (
+                "Review the basics and practice more."
+            )
+
+        else:
+
+            strengths = (
+                "Good effort attempting the quiz."
+            )
+
+            weaknesses = (
+                "Your fundamentals need improvement."
+            )
+
+            recommendations = (
+                "Study the basics carefully and "
+                "practice beginner-level questions."
+            )
+
+    feedback, created = AIFeedback.objects.get_or_create(
 
         attempt=attempt,
 
-        strengths=strengths,
+        defaults={
 
-        weaknesses=weaknesses,
+            "user": user,
 
-        recommendations=recommendations
+            "strengths": strengths,
 
+            "weaknesses": weaknesses,
+
+            "recommendations": recommendations,
+        }
     )
+
+    if not created:
+
+        feedback.strengths = strengths
+
+        feedback.weaknesses = weaknesses
+
+        feedback.recommendations = recommendations
+
+        feedback.save()
 
     return feedback
