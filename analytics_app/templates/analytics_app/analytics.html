@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}
+Analytics | PrepArena
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+            Analytics Dashboard
+        </h1>
+
+        <p class="text-muted">
+            Monitor your interview preparation performance.
+        </p>
+
+    </div>
+
+    <!-- Main Statistics -->
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-book fa-2x text-primary mb-3"></i>
+
+                    <h5>Total Attempts</h5>
+
+                    <h2>{{ total_attempts }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-bullseye fa-2x text-success mb-3"></i>
+
+                    <h5>Average Accuracy</h5>
+
+                    <h2>{{ average_accuracy }}%</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-trophy fa-2x text-warning mb-3"></i>
+
+                    <h5>Highest Score</h5>
+
+                    <h2>{{ highest_score }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-chart-line fa-2x text-danger mb-3"></i>
+
+                    <h5>Readiness</h5>
+
+                    <h2>{{ readiness }}%</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Activity Statistics -->
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-calendar-day fa-2x text-primary mb-3"></i>
+
+                    <h5>Today</h5>
+
+                    <h2>{{ daily_attempts }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-calendar-week fa-2x text-success mb-3"></i>
+
+                    <h5>Last 7 Days</h5>
+
+                    <h2>{{ weekly_attempts }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center h-100">
+
+                <div class="card-body">
+
+                    <i class="fa-solid fa-calendar-alt fa-2x text-warning mb-3"></i>
+
+                    <h5>Last 30 Days</h5>
+
+                    <h2>{{ monthly_attempts }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

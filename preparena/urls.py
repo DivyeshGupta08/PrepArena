@@ -44,6 +44,8 @@ urlpatterns = [
     path('leaderboard/', include('leaderboard.urls')),
 
     path('api/', include('api.urls')),
+    
+    path("analytics/", include("analytics_app.urls")),
 
     path(
         'swagger/',
