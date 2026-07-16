@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
 Dashboard | PrepArena
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -9,148 +15,89 @@ Dashboard | PrepArena
 <div class="container py-5">
 
     <div class="text-center mb-5">
-
         <i class="fa-solid fa-chart-line fa-4x text-primary mb-3"></i>
-
-        <h1 class="fw-bold">
-            Dashboard
-        </h1>
-
+        <h1 class="fw-bold">Dashboard</h1>
         <p class="text-muted">
             Track your interview preparation progress.
         </p>
-
     </div>
-
-    <!-- Statistics -->
 
     <div class="row g-4 mb-5">
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-clipboard-list fa-2x text-primary mb-3"></i>
-
                     <h5>Total Attempts</h5>
-
                     <h2>{{ total_attempts }}</h2>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-percent fa-2x text-success mb-3"></i>
-
                     <h5>Average</h5>
-
                     <h2>{{ average_percentage }}%</h2>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-trophy fa-2x text-warning mb-3"></i>
-
                     <h5>Highest Score</h5>
-
                     <h2>{{ highest_score }}</h2>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-bullseye fa-2x text-danger mb-3"></i>
-
                     <h5>Readiness</h5>
-
                     <h2>{{ readiness_score }}%</h2>
-
                 </div>
-
             </div>
-
         </div>
 
     </div>
 
-    <!-- Performance -->
-
     <div class="row mb-5">
 
         <div class="col-lg-6">
-
             <div class="card shadow border-0">
-
                 <div class="card-body">
-
                     <h4 class="mb-3">
-
                         <i class="fa-solid fa-chart-line"></i>
-
                         Performance Trend
-
                     </h4>
 
                     <canvas id="attemptChart"></canvas>
 
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-lg-6">
-
             <div class="card shadow border-0">
-
                 <div class="card-body">
 
                     <h4 class="mb-3">
-
                         <i class="fa-solid fa-chart-column"></i>
-
                         Topic Performance
-
                     </h4>
 
                     <canvas id="topicChart"></canvas>
 
                 </div>
-
             </div>
-
         </div>
 
     </div>
-
-    <!-- Summary -->
 
     <div class="row mb-5">
 
@@ -161,46 +108,19 @@ Dashboard | PrepArena
                 <div class="card-body">
 
                     <h4>
-
                         <i class="fa-solid fa-medal text-warning"></i>
-
                         Performance
-
                     </h4>
 
                     <hr>
 
-                    <p>
+                    <p><strong>Grade:</strong> {{ grade }}</p>
 
-                        <strong>Grade:</strong>
+                    <p><strong>Strongest Topic:</strong> {{ strong_topic|default:"N/A" }}</p>
 
-                        {{ grade }}
+                    <p><strong>Weakest Topic:</strong> {{ weak_topic|default:"N/A" }}</p>
 
-                    </p>
-
-                    <p>
-
-                        <strong>Strongest Topic:</strong>
-
-                        {{ strong_topic|default:"N/A" }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Weakest Topic:</strong>
-
-                        {{ weak_topic|default:"N/A" }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Interview Readiness:</strong>
-
-                        {{ interview_readiness }}%
-
-                    </p>
+                    <p><strong>Interview Readiness:</strong> {{ interview_readiness }}%</p>
 
                 </div>
 
@@ -224,11 +144,7 @@ Dashboard | PrepArena
 
                     <hr>
 
-                    <p>
-
-                        {{ recommendation }}
-
-                    </p>
+                    <p>{{ recommendation }}</p>
 
                 </div>
 
@@ -237,8 +153,6 @@ Dashboard | PrepArena
         </div>
 
     </div>
-
-    <!-- Resources -->
 
     <div class="card shadow border-0">
 
@@ -260,11 +174,9 @@ Dashboard | PrepArena
 
                     {% for resource in resources %}
 
-                        <a
-                            href="{{ resource.url }}"
-                            target="_blank"
-                            class="list-group-item list-group-item-action"
-                        >
+                        <a href="{{ resource.url }}"
+                           target="_blank"
+                           class="list-group-item list-group-item-action">
 
                             {{ resource.title }}
 
@@ -290,43 +202,46 @@ Dashboard | PrepArena
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+
 <script>
 
-const attemptLabels = {{ attempt_labels|safe }};
-const attemptScores = {{ attempt_scores|safe }};
+document.addEventListener("DOMContentLoaded", function () {
 
-new Chart(
-document.getElementById('attemptChart'),
-{
-type:'line',
-data:{
-labels:attemptLabels,
-datasets:[{
-label:'Percentage',
-data:attemptScores,
-fill:false,
-tension:.4
-}]
-}
-}
-);
+    const attemptLabels = {{ attempt_labels|safe }};
+    const attemptScores = {{ attempt_scores|safe }};
 
-const topicLabels = {{ topic_labels|safe }};
-const topicPercentages = {{ topic_percentages|safe }};
+    const topicLabels = {{ topic_labels|safe }};
+    const topicPercentages = {{ topic_percentages|safe }};
 
-new Chart(
-document.getElementById('topicChart'),
-{
-type:'bar',
-data:{
-labels:topicLabels,
-datasets:[{
-label:'Performance',
-data:topicPercentages
-}]
-}
-}
-);
+    new Chart(document.getElementById("attemptChart"), {
+        type: "line",
+        data: {
+            labels: attemptLabels,
+            datasets: [{
+                label: "Percentage",
+                data: attemptScores,
+                borderWidth: 3,
+                tension: 0.4
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("topicChart"), {
+        type: "bar",
+        data: {
+            labels: topicLabels,
+            datasets: [{
+                label: "Performance",
+                data: topicPercentages,
+                borderWidth: 2
+            }]
+        }
+    });
+
+});
 
 </script>
 

@@ -125,21 +125,16 @@ def dashboard(request):
     attempt_labels = []
     attempt_scores = []
 
-    for attempt in attempts.order_by(
-        '-submitted_at'
-    )[:10]:
+    for attempt in attempts.order_by('-submitted_at')[:10]:
 
-        attempt_labels.append(
-            attempt.submitted_at.strftime(
-                '%d-%m'
+        if attempt.submitted_at:
+            attempt_labels.append(
+                attempt.submitted_at.strftime('%d-%m')
             )
-        )
+        else:
+            attempt_labels.append("Unknown")
 
-        attempt_scores.append(
-            float(
-                attempt.percentage
-            )
-        )
+        attempt_scores.append(float(attempt.percentage))
 
     topic_labels = []
     topic_percentages = []

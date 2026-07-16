@@ -1,165 +1,126 @@
-import google.generativeai as genai
-
+from google import genai
 from decouple import config
-
 from .models import AIFeedback
+import re
+import traceback
 
-
-genai.configure(
+client = genai.Client(
     api_key=config("GEMINI_API_KEY")
-)
-
-model = genai.GenerativeModel(
-    "gemini-1.5-flash"
 )
 
 
 def generate_feedback(attempt):
 
     user = attempt.user
-
     quiz = attempt.quiz
 
-    percentage = attempt.percentage
-
     total_questions = quiz.questions.count()
-
-    correct_answers = attempt.answers.filter(
-        is_correct=True
-    ).count()
-
-    wrong_answers = total_questions - correct_answers
-
-    topic_name = quiz.topic.name
+    correct = attempt.answers.filter(is_correct=True).count()
+    wrong = total_questions - correct
+    percentage = attempt.percentage
 
     prompt = f"""
 You are an expert interview mentor.
 
-Analyze the following quiz result.
+A student attempted a quiz.
 
 Topic:
-{topic_name}
+{quiz.topic.name}
 
-Quiz Score:
+Quiz:
+{quiz.title}
+
+Score:
+{correct}/{total_questions}
+
+Percentage:
 {percentage:.2f}%
 
-Correct Answers:
-{correct_answers}
-
 Wrong Answers:
-{wrong_answers}
+{wrong}
 
-Provide feedback in three sections.
+Generate ONLY these sections exactly.
 
 Strengths:
 Weaknesses:
 Recommendations:
 
-Keep the feedback professional, encouraging and concise.
+Do not use markdown.
+Keep each section under 80 words.
 """
+
+    strengths = ""
+    weaknesses = ""
+    recommendations = ""
 
     try:
 
-        response = model.generate_content(
-            prompt
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
         )
 
-        ai_feedback = response.text
+        text = response.text.strip()
 
-        strengths = ai_feedback
+        print("\n========== GEMINI RESPONSE ==========")
+        print(text)
+        print("=====================================\n")
 
-        weaknesses = ""
+        strength_match = re.search(
+            r"Strengths:\s*(.*?)\s*Weaknesses:",
+            text,
+            re.DOTALL | re.IGNORECASE,
+        )
 
-        recommendations = ""
+        weakness_match = re.search(
+            r"Weaknesses:\s*(.*?)\s*Recommendations:",
+            text,
+            re.DOTALL | re.IGNORECASE,
+        )
+
+        recommendation_match = re.search(
+            r"Recommendations:\s*(.*)",
+            text,
+            re.DOTALL | re.IGNORECASE,
+        )
+
+        if strength_match:
+            strengths = strength_match.group(1).strip()
+
+        if weakness_match:
+            weaknesses = weakness_match.group(1).strip()
+
+        if recommendation_match:
+            recommendations = recommendation_match.group(1).strip()
 
     except Exception:
 
-        if percentage >= 80:
+        print("\n========== GEMINI ERROR ==========")
+        traceback.print_exc()
+        print("==================================\n")
 
-            strengths = (
-                f"You answered {correct_answers} out of "
-                f"{total_questions} questions correctly. "
-                f"You have an excellent understanding of "
-                f"{topic_name}."
-            )
+        strengths = "You have a basic understanding of the topic."
 
-            weaknesses = (
-                "Very few mistakes were detected."
-            )
+        weaknesses = "Some concepts need additional practice."
 
-            recommendations = (
-                "Practice advanced interview questions "
-                "to further strengthen your skills."
-            )
-
-        elif percentage >= 60:
-
-            strengths = (
-                "Your fundamentals are good."
-            )
-
-            weaknesses = (
-                f"You missed {wrong_answers} questions."
-            )
-
-            recommendations = (
-                "Revise important concepts and attempt "
-                "another quiz."
-            )
-
-        elif percentage >= 40:
-
-            strengths = (
-                "You have a basic understanding."
-            )
-
-            weaknesses = (
-                "Your concepts are not yet consistent."
-            )
-
-            recommendations = (
-                "Review the basics and practice more."
-            )
-
-        else:
-
-            strengths = (
-                "Good effort attempting the quiz."
-            )
-
-            weaknesses = (
-                "Your fundamentals need improvement."
-            )
-
-            recommendations = (
-                "Study the basics carefully and "
-                "practice beginner-level questions."
-            )
+        recommendations = (
+            "Review the incorrect answers and attempt another quiz."
+        )
 
     feedback, created = AIFeedback.objects.get_or_create(
-
         attempt=attempt,
-
         defaults={
-
             "user": user,
-
             "strengths": strengths,
-
             "weaknesses": weaknesses,
-
             "recommendations": recommendations,
-        }
+        },
     )
 
     if not created:
-
         feedback.strengths = strengths
-
         feedback.weaknesses = weaknesses
-
         feedback.recommendations = recommendations
-
         feedback.save()
 
     return feedback
