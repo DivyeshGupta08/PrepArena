@@ -10,6 +10,8 @@ Analytics | PrepArena
 
     <div class="text-center mb-5">
 
+        <i class="fa-solid fa-chart-line fa-4x text-primary mb-3"></i>
+
         <h1 class="fw-bold">
             Analytics Dashboard
         </h1>
@@ -20,57 +22,100 @@ Analytics | PrepArena
 
     </div>
 
-    <!-- Main Statistics -->
+    <!-- Statistics -->
 
     <div class="row g-4 mb-5">
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-book fa-2x text-primary mb-3"></i>
-
                     <h5>Total Attempts</h5>
-
                     <h2>{{ total_attempts }}</h2>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
-                    <i class="fa-solid fa-bullseye fa-2x text-success mb-3"></i>
-
+                    <i class="fa-solid fa-percent fa-2x text-success mb-3"></i>
                     <h5>Average Accuracy</h5>
-
                     <h2>{{ average_accuracy }}%</h2>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-3">
-
             <div class="card shadow border-0 text-center h-100">
-
                 <div class="card-body">
-
                     <i class="fa-solid fa-trophy fa-2x text-warning mb-3"></i>
-
                     <h5>Highest Score</h5>
-
                     <h2>{{ highest_score }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center h-100">
+                <div class="card-body">
+                    <i class="fa-solid fa-chart-line fa-2x text-danger mb-3"></i>
+                    <h5>Readiness</h5>
+                    <h2>{{ readiness }}%</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Activity -->
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5>Today</h5>
+                    <h2>{{ daily_attempts }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5>Last 7 Days</h5>
+                    <h2>{{ weekly_attempts }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5>Last 30 Days</h5>
+                    <h2>{{ monthly_attempts }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+
+    <div class="row mb-5">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h4 class="mb-3">
+                        Performance Trend
+                    </h4>
+
+                    <canvas id="attemptChart"></canvas>
 
                 </div>
 
@@ -78,17 +123,17 @@ Analytics | PrepArena
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-lg-6">
 
-            <div class="card shadow border-0 text-center h-100">
+            <div class="card shadow border-0">
 
                 <div class="card-body">
 
-                    <i class="fa-solid fa-chart-line fa-2x text-danger mb-3"></i>
+                    <h4 class="mb-3">
+                        Topic Performance
+                    </h4>
 
-                    <h5>Readiness</h5>
-
-                    <h2>{{ readiness }}%</h2>
+                    <canvas id="topicChart"></canvas>
 
                 </div>
 
@@ -98,21 +143,34 @@ Analytics | PrepArena
 
     </div>
 
-    <!-- Activity Statistics -->
+    <!-- Summary -->
 
-    <div class="row g-4">
+    <div class="row mb-5">
 
-        <div class="col-md-4">
+        <div class="col-md-6">
 
-            <div class="card shadow border-0 text-center h-100">
+            <div class="card shadow border-0 h-100">
 
                 <div class="card-body">
 
-                    <i class="fa-solid fa-calendar-day fa-2x text-primary mb-3"></i>
+                    <h4>Performance Summary</h4>
 
-                    <h5>Today</h5>
+                    <hr>
 
-                    <h2>{{ daily_attempts }}</h2>
+                    <p>
+                        <strong>Strongest Topic:</strong>
+                        {{ strong_topic|default:"N/A" }}
+                    </p>
+
+                    <p>
+                        <strong>Weakest Topic:</strong>
+                        {{ weak_topic|default:"N/A" }}
+                    </p>
+
+                    <p>
+                        <strong>Interview Readiness:</strong>
+                        {{ readiness }}%
+                    </p>
 
                 </div>
 
@@ -120,17 +178,19 @@ Analytics | PrepArena
 
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
 
-            <div class="card shadow border-0 text-center h-100">
+            <div class="card shadow border-0 h-100">
 
                 <div class="card-body">
 
-                    <i class="fa-solid fa-calendar-week fa-2x text-success mb-3"></i>
+                    <h4>Recommendation</h4>
 
-                    <h5>Last 7 Days</h5>
+                    <hr>
 
-                    <h2>{{ weekly_attempts }}</h2>
+                    <p>
+                        {{ recommendation }}
+                    </p>
 
                 </div>
 
@@ -138,26 +198,92 @@ Analytics | PrepArena
 
         </div>
 
-        <div class="col-md-4">
+    </div>
 
-            <div class="card shadow border-0 text-center h-100">
+    <!-- Resources -->
 
-                <div class="card-body">
+    <div class="card shadow border-0">
 
-                    <i class="fa-solid fa-calendar-alt fa-2x text-warning mb-3"></i>
+        <div class="card-body">
 
-                    <h5>Last 30 Days</h5>
+            <h4>Recommended Resources</h4>
 
-                    <h2>{{ monthly_attempts }}</h2>
+            <hr>
+
+            {% if resources %}
+
+                <div class="list-group">
+
+                    {% for resource in resources %}
+
+                        <a href="{{ resource.url }}"
+                           target="_blank"
+                           class="list-group-item list-group-item-action">
+
+                            {{ resource.title }}
+
+                        </a>
+
+                    {% endfor %}
 
                 </div>
 
-            </div>
+            {% else %}
+
+                <p class="text-muted">
+                    No recommendations available.
+                </p>
+
+            {% endif %}
 
         </div>
 
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const attemptLabels = {{ attempt_labels|safe }};
+    const attemptScores = {{ attempt_scores|safe }};
+
+    const topicLabels = {{ topic_labels|safe }};
+    const topicPercentages = {{ topic_percentages|safe }};
+
+    new Chart(document.getElementById("attemptChart"), {
+        type: "line",
+        data: {
+            labels: attemptLabels,
+            datasets: [{
+                label: "Percentage",
+                data: attemptScores,
+                borderWidth: 3,
+                tension: 0.4,
+                fill: false
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("topicChart"), {
+        type: "bar",
+        data: {
+            labels: topicLabels,
+            datasets: [{
+                label: "Performance",
+                data: topicPercentages,
+                borderWidth: 2
+            }]
+        }
+    });
+
+});
+
+</script>
 
 {% endblock %}
