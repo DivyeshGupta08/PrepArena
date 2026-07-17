@@ -66,6 +66,20 @@ class Question(models.Model):
     option_c = models.CharField(max_length=255)
 
     option_d = models.CharField(max_length=255)
+    
+    DIFFICULTY_CHOICES = [
+        ("Easy", "Easy"),
+        ("Medium", "Medium"),
+        ("Intermediate", "Intermediate"),
+        ("Hard", "Hard"),
+        ("Expert", "Expert"),
+    ]
+
+    difficulty = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_CHOICES,
+        default="Easy",
+    )
 
     correct_option = models.CharField(
         max_length=1,

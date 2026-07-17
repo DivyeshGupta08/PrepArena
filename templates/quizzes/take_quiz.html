@@ -6,19 +6,33 @@
 
 {% block content %}
 
+<style>
+
+#timer{
+    position:fixed;
+    top:80px;
+    right:20px;
+    z-index:9999;
+    min-width:170px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+}
+
+</style>
+
 <div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="mb-4">
 
         <h2 class="fw-bold">
             {{ quiz.title }}
         </h2>
 
-        <span class="badge bg-success fs-5" id="timer">
-            Time Left: {{ quiz.time_limit_minutes }}:00
-        </span>
-
     </div>
+
+    <span class="badge bg-success fs-5 p-3" id="timer">
+        Time Left: {{ quiz.time_limit_minutes }}:00
+    </span>
 
     <form method="POST" id="quizForm">
 
@@ -167,10 +181,6 @@ updateTimer();
 
 const timerInterval = setInterval(updateTimer, 1000);
 
-// -------------------------------------
-// Warn before leaving the page
-// -------------------------------------
-
 window.addEventListener("beforeunload", function (e) {
 
     if (!quizSubmitted) {
@@ -183,10 +193,6 @@ window.addEventListener("beforeunload", function (e) {
 
 });
 
-// -------------------------------------
-// Disable browser Back button
-// -------------------------------------
-
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -194,10 +200,6 @@ window.onpopstate = function () {
     history.go(1);
 
 };
-
-// -------------------------------------
-// Disable button after submission
-// -------------------------------------
 
 form.addEventListener("submit", function () {
 
