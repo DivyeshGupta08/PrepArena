@@ -21,9 +21,8 @@ class QuizSerializer(
     serializers.ModelSerializer
 ):
 
-    topic_name = serializers.CharField(
-        source='topic.name',
-        read_only=True
+    topic_name = serializers.ReadOnlyField(
+        source="topic.name"
     )
 
     class Meta:
