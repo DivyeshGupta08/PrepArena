@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'analytics_app',
     'resources',
     'api',
+    'admin_panel',
 ]
 
 MIDDLEWARE = [

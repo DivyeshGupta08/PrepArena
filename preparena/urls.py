@@ -46,6 +46,8 @@ urlpatterns = [
     path('api/', include('api.urls')),
     
     path("analytics/", include("analytics_app.urls")),
+    
+    path("admin-panel/", include("admin_panel.urls")),
 
     path(
         'swagger/',
