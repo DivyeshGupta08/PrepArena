@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import path
+from django.template.response import TemplateResponse
 
 from .models import (
     Topic,
@@ -6,8 +8,10 @@ from .models import (
     Question,
     QuizAttempt,
     UserAnswer,
-    AIFeedback
+    AIFeedback,
 )
+
+from .admin_views import upload_questions
 
 
 @admin.register(Topic)
@@ -40,19 +44,40 @@ class QuizAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+
     list_display = (
         "question_text",
         "quiz",
         "difficulty",
         "correct_option",
     )
+
     list_filter = (
         "quiz",
         "difficulty",
     )
+
     search_fields = (
         "question_text",
     )
+
+    def get_urls(self):
+
+        urls = super().get_urls()
+
+        custom_urls = [
+
+            path(
+                "upload-excel/",
+                self.admin_site.admin_view(upload_questions),
+                name="question-upload-excel",
+            ),
+
+        ]
+
+        return custom_urls + urls
+
+    change_list_template = "admin/question_change_list.html"
 
 
 @admin.register(QuizAttempt)

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}
+Attempt History | PrepArena
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>
+            📜 Attempt History
+        </h2>
+
+        <a href="{% url 'topic_list' %}" class="btn btn-primary">
+            Take New Quiz
+        </a>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Total Attempts</h6>
+                    <h2>{{ total_attempts }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Highest Score</h6>
+                    <h2>{{ highest_score }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h6>Average Percentage</h6>
+                    <h2>{{ average_percentage }}%</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <form method="get" class="row g-3 mb-4">
+
+        <div class="col-md-4">
+
+            <input type="text" name="search" class="form-control" placeholder="Search Quiz..." value="{{ search }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <select name="topic" class="form-select">
+
+                <option value="">
+                    All Topics
+                </option>
+
+                {% for topic in topics %}
+
+                <option value="{{ topic.name }}" {% if selected_topic == topic.name %} selected {% endif %}>
+
+                    {{ topic.name }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button type="submit" class="btn btn-success w-100">
+
+                Filter
+
+            </button>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <a href="{% url 'attempt_history' %}" class="btn btn-secondary w-100">
+
+                Reset
+
+            </a>
+
+        </div>
+
+    </form>
+
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            {% if attempts %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Quiz</th>
+
+                            <th>Topic</th>
+
+                            <th>Score</th>
+
+                            <th>Percentage</th>
+
+                            <th>Date</th>
+
+                            <th>Review</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for attempt in attempts %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ attempt.quiz.title }}
+
+                            </td>
+
+                            <td>
+
+                                {{ attempt.quiz.topic.name }}
+
+                            </td>
+
+                            <td>
+
+                                <strong>{{ attempt.score }}</strong>
+
+                            </td>
+
+                            <td>
+
+                                {% if attempt.percentage >= 80 %}
+
+                                <span class="badge bg-success">
+                                    A ({{ attempt.percentage }}%)
+                                </span>
+
+                                {% elif attempt.percentage >= 60 %}
+
+                                <span class="badge bg-primary">
+                                    B ({{ attempt.percentage }}%)
+                                </span>
+
+                                {% elif attempt.percentage >= 40 %}
+
+                                <span class="badge bg-warning text-dark">
+                                    C ({{ attempt.percentage }}%)
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+                                    D ({{ attempt.percentage }}%)
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+                            <td>
+
+                                {{ attempt.submitted_at|date:"d M Y H:i" }}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'review_answers' attempt.id %}" class="btn btn-sm btn-outline-primary">
+
+                                    Review
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="alert alert-info">
+
+                No quiz attempts found.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

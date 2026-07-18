@@ -1,14 +1,21 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from quizzes.models import QuizAttempt
 from django.db.models import Avg, Max, Min
 from resources.models import StudyResource
 import json
 
 
+@login_required(login_url="login")
 def dashboard(request):
 
-    attempts = QuizAttempt.objects.filter(
-        user=request.user
+    attempts = (
+        QuizAttempt.objects
+        .filter(user=request.user)
+        .select_related(
+            "quiz",
+            "quiz__topic"
+        )
     )
 
     total_attempts = attempts.count()

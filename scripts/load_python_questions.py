@@ -266,7 +266,7 @@ questions = [
 "option_c":"super",
 "option_d":"Use parent class inside parentheses",
 "correct_option":"D",
-"difficulty":"Intermediate",
+"difficulty":"Medium",
 "explanation":"Inheritance is done by passing the parent class inside parentheses."
 },
 

@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count
 
 from quizzes.models import QuizAttempt
 
 
+@login_required
 def leaderboard(request):
 
     leaderboard_data = (

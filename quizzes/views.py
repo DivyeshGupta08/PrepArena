@@ -5,7 +5,7 @@ from django.shortcuts import (
 )
 
 from django.utils import timezone
-from django.db.models import Avg
+from django.db.models import Avg, Max, Count, Q
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 
@@ -45,6 +45,7 @@ def topic_list(request):
     )
 
 
+@login_required
 def quiz_list(request, topic_id):
 
     topic = get_object_or_404(
@@ -387,4 +388,56 @@ def review_answers(request, attempt_id):
             'attempt': attempt,
             'answers': answers
         }
+    )
+    
+@login_required
+def attempt_history(request):
+
+    attempts = QuizAttempt.objects.filter(
+        user=request.user
+    ).order_by("-submitted_at")
+
+    search = request.GET.get("search", "")
+    topic = request.GET.get("topic", "")
+
+    if search:
+        attempts = attempts.filter(
+            quiz__title__icontains=search
+        )
+
+    if topic:
+        attempts = attempts.filter(
+            quiz__topic__name=topic
+        )
+
+    topics = Topic.objects.all()
+
+    total_attempts = attempts.count()
+
+    highest_score = (
+        attempts.aggregate(Max("score"))["score__max"]
+        or 0
+    )
+
+    average_percentage = round(
+        attempts.aggregate(Avg("percentage"))["percentage__avg"]
+        or 0,
+        2
+    )
+
+    context = {
+        "attempts": attempts,
+        "topics": topics,
+        "selected_topic": topic,
+        "search": search,
+
+        "total_attempts": total_attempts,
+        "highest_score": highest_score,
+        "average_percentage": average_percentage,
+    }
+
+    return render(
+        request,
+        "quizzes/attempt_history.html",
+        context,
     )
